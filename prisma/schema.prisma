@@ -1,0 +1,110 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  bio       String?
+  xp        Int      @default(0)
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  skills            UserSkill[]
+  teachingSessions  Session[] @relation("TeacherSessions")
+  learningSessions  Session[] @relation("LearnerSessions")
+  givenTestimonials Testimonial[] @relation("TestimonialFrom")
+  receivedTestimonials Testimonial[] @relation("TestimonialTo")
+
+  @@map("users")
+}
+
+model Skill {
+  id       String @id @default(cuid())
+  name     String @unique
+  category String
+  
+  // Relations
+  userSkills UserSkill[]
+  sessions   Session[]
+
+  @@map("skills")
+}
+
+model UserSkill {
+  id     String @id @default(cuid())
+  userId String
+  skillId String
+  type   SkillType
+  level  SkillLevel
+  
+  // Relations
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId, type])
+  @@map("user_skills")
+}
+
+model Session {
+  id        String        @id @default(cuid())
+  teacherId String
+  learnerId String
+  skillId   String
+  date      DateTime
+  status    SessionStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  // Relations
+  teacher      User          @relation("TeacherSessions", fields: [teacherId], references: [id], onDelete: Cascade)
+  learner      User          @relation("LearnerSessions", fields: [learnerId], references: [id], onDelete: Cascade)
+  skill        Skill         @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  testimonials Testimonial[]
+
+  @@map("sessions")
+}
+
+model Testimonial {
+  id         String @id @default(cuid())
+  sessionId  String
+  fromUserId String
+  toUserId   String
+  message    String
+  rating     Int
+  createdAt  DateTime @default(now())
+
+  // Relations
+  session  Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  fromUser User    @relation("TestimonialFrom", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser   User    @relation("TestimonialTo", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, fromUserId])
+  @@map("testimonials")
+}
+
+enum SkillType {
+  TEACH
+  LEARN
+}
+
+enum SkillLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum SessionStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
