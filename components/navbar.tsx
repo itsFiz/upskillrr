@@ -16,7 +16,7 @@ export function Navbar() {
   const { data: session, status } = useSession()
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md border-b border-purple-100 sticky top-0 z-50">
+    <nav className="hidden md:flex bg-white/80 backdrop-blur-md border-b border-purple-100 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center space-x-2">
@@ -40,6 +40,12 @@ export function Navbar() {
                   className="text-gray-700 hover:text-purple-600 transition-colors font-medium"
                 >
                   Find Mentors
+                </Link>
+                <Link 
+                  href="/discover" 
+                  className="text-gray-700 hover:text-purple-600 transition-colors font-medium"
+                >
+                  Discover
                 </Link>
                 <Link 
                   href="/leaderboard" 

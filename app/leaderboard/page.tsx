@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Trophy, Medal, Award, Crown, Star, TrendingUp } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { PageWrapper } from '@/components/page-wrapper'
 
 interface LeaderboardUser {
   id: string
@@ -54,10 +55,10 @@ export default function Leaderboard() {
 
   const getRankIcon = (rank: number) => {
     switch (rank) {
-      case 1: return <Crown className="h-6 w-6 text-yellow-500" />
-      case 2: return <Medal className="h-6 w-6 text-gray-400" />
-      case 3: return <Award className="h-6 w-6 text-amber-600" />
-      default: return <span className="text-lg font-bold text-gray-600">#{rank}</span>
+      case 1: return <Crown className="h-6 w-6 text-yellow-500" />;
+      case 2: return <Medal className="h-6 w-6 text-gray-400" />;
+      case 3: return <Award className="h-6 w-6 text-amber-600" />;
+      default: return <span className="text-lg font-bold text-gray-400">#{rank}</span>;
     }
   }
 
@@ -86,145 +87,108 @@ export default function Leaderboard() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <PageWrapper>
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            🏆 Leaderboard
-          </h1>
-          <p className="text-gray-600">
-            See how you rank among our top contributors and learners
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Leaderboard</h1>
+          <p className="text-lg text-gray-600">
+            See how you rank among the top contributors and learners.
           </p>
-          {currentUserRank && (
-            <div className="mt-4">
-              <Badge variant="outline" className="text-lg px-4 py-2">
-                Your Rank: #{currentUserRank}
-              </Badge>
-            </div>
-          )}
         </div>
 
         {/* Top 3 Podium */}
         {leaderboard.length >= 3 && (
-          <div className="mb-12">
-            <div className="flex justify-center items-end space-x-4 mb-8">
-              {/* 2nd Place */}
-              <div className="text-center">
-                <div className="bg-gradient-to-br from-gray-300 to-gray-500 rounded-lg p-6 mb-4 h-32 flex flex-col justify-end">
-                  <Avatar className="w-16 h-16 mx-auto mb-2 ring-4 ring-gray-300">
-                    <AvatarImage src={leaderboard[1]?.avatarUrl} />
-                    <AvatarFallback className="bg-gray-200">
-                      {leaderboard[1]?.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <Medal className="h-6 w-6 mx-auto text-white" />
-                </div>
-                <h3 className="font-bold text-gray-900">{leaderboard[1]?.name}</h3>
-                <p className="text-sm text-gray-600">{leaderboard[1]?.xp} XP</p>
-              </div>
-
-              {/* 1st Place */}
-              <div className="text-center">
-                <div className="bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg p-6 mb-4 h-40 flex flex-col justify-end">
-                  <Avatar className="w-20 h-20 mx-auto mb-2 ring-4 ring-yellow-300">
-                    <AvatarImage src={leaderboard[0]?.avatarUrl} />
-                    <AvatarFallback className="bg-yellow-200">
-                      {leaderboard[0]?.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <Crown className="h-8 w-8 mx-auto text-white" />
-                </div>
-                <h3 className="font-bold text-gray-900 text-lg">{leaderboard[0]?.name}</h3>
-                <p className="text-sm text-gray-600">{leaderboard[0]?.xp} XP</p>
-              </div>
-
-              {/* 3rd Place */}
-              <div className="text-center">
-                <div className="bg-gradient-to-br from-amber-400 to-amber-600 rounded-lg p-6 mb-4 h-28 flex flex-col justify-end">
-                  <Avatar className="w-14 h-14 mx-auto mb-2 ring-4 ring-amber-300">
-                    <AvatarImage src={leaderboard[2]?.avatarUrl} />
-                    <AvatarFallback className="bg-amber-200">
-                      {leaderboard[2]?.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <Award className="h-5 w-5 mx-auto text-white" />
-                </div>
-                <h3 className="font-bold text-gray-900">{leaderboard[2]?.name}</h3>
-                <p className="text-sm text-gray-600">{leaderboard[2]?.xp} XP</p>
-              </div>
+          <div className="grid grid-cols-3 gap-4 mb-12 text-center">
+            {/* 2nd Place */}
+            <div className="p-4 rounded-2xl bg-white/40 backdrop-blur-md shadow-lg border border-white/20 mt-8">
+              <Avatar className="w-24 h-24 mx-auto ring-4 ring-gray-300">
+                <AvatarImage src={leaderboard[1].avatarUrl} />
+                <AvatarFallback>{leaderboard[1].name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <h3 className="font-bold text-lg mt-3">{leaderboard[1].name}</h3>
+              <p className="text-gray-600">{leaderboard[1].xp} XP</p>
+              <div className="mt-2">{getRankIcon(2)}</div>
+            </div>
+            {/* 1st Place */}
+            <div className="p-4 rounded-2xl bg-white/40 backdrop-blur-md shadow-lg border border-white/20">
+              <Avatar className="w-32 h-32 mx-auto ring-4 ring-yellow-400">
+                <AvatarImage src={leaderboard[0].avatarUrl} />
+                <AvatarFallback>{leaderboard[0].name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <h3 className="font-bold text-xl mt-3">{leaderboard[0].name}</h3>
+              <p className="text-gray-600">{leaderboard[0].xp} XP</p>
+              <div className="mt-2">{getRankIcon(1)}</div>
+            </div>
+            {/* 3rd Place */}
+            <div className="p-4 rounded-2xl bg-white/40 backdrop-blur-md shadow-lg border border-white/20 mt-8">
+              <Avatar className="w-24 h-24 mx-auto ring-4 ring-amber-500">
+                <AvatarImage src={leaderboard[2].avatarUrl} />
+                <AvatarFallback>{leaderboard[2].name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <h3 className="font-bold text-lg mt-3">{leaderboard[2].name}</h3>
+              <p className="text-gray-600">{leaderboard[2].xp} XP</p>
+              <div className="mt-2">{getRankIcon(3)}</div>
             </div>
           </div>
         )}
 
-        {/* Full Leaderboard */}
-        <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Trophy className="h-5 w-5 text-purple-600" />
-              <span>Top Contributors</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="space-y-0">
-              {leaderboard.map((user, index) => (
-                <div
-                  key={user.id}
-                  className={`flex items-center justify-between p-4 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors ${
-                    session?.user?.email && user.name === session.user.name ? 'bg-purple-50 border-purple-200' : ''
-                  }`}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center justify-center w-12 h-12">
-                      {getRankIcon(user.rank)}
-                    </div>
-                    <Avatar className="w-12 h-12">
-                      <AvatarImage src={user.avatarUrl} />
-                      <AvatarFallback className="bg-purple-100 text-purple-600">
-                        {user.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{user.name}</h3>
-                      <div className="flex items-center space-x-3 text-sm text-gray-600">
-                        <span className="flex items-center space-x-1">
-                          <TrendingUp className="h-3 w-3" />
-                          <span>{user.teachingSessions} sessions</span>
-                        </span>
-                        {user.averageRating > 0 && (
-                          <span className="flex items-center space-x-1">
-                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                            <span>{user.averageRating.toFixed(1)}</span>
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <Badge className={getRankBadge(user.rank)}>
-                      {user.xp} XP
-                    </Badge>
+        {/* User's Rank */}
+        {currentUserRank && (
+          <div className="mb-8">
+            <Card className="p-4 bg-white/60 backdrop-blur-md shadow-lg border border-white/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className="text-xl font-bold text-purple-600">#{currentUserRank}</div>
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={session?.user?.image || ''} />
+                    <AvatarFallback>{session?.user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-semibold text-gray-900">Your Rank</p>
+                    <p className="text-sm text-gray-600">Keep it up!</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {leaderboard.length === 0 && (
-          <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
-            <CardContent className="py-16 text-center">
-              <Trophy className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                No rankings yet
-              </h3>
-              <p className="text-gray-600">
-                Start teaching and learning to appear on the leaderboard!
-              </p>
-            </CardContent>
-          </Card>
+                <div className="text-right">
+                  <p className="font-bold text-gray-900">{leaderboard.find(u => u.id === session?.user?.id)?.xp || ''} XP</p>
+                </div>
+              </div>
+            </Card>
+          </div>
         )}
+
+        {/* Leaderboard Table */}
+        <div className="p-2 rounded-2xl bg-white/40 backdrop-blur-md shadow-lg border border-white/20">
+          <div className="space-y-2">
+            {leaderboard.map((user, index) => (
+              <Card 
+                key={user.id} 
+                className={`p-3 transition-all ${
+                  index < 3 ? 'bg-purple-100/50' : 'bg-white/50'
+                } ${
+                  session?.user?.id === user.id ? 'ring-2 ring-purple-500' : ''
+                }`}
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="w-8 text-center text-lg font-bold text-gray-500">{getRankIcon(user.rank)}</div>
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={user.avatarUrl} />
+                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-900">{user.name}</p>
+                    <div className="flex items-center space-x-3 text-xs text-gray-600">
+                      <span className="flex items-center space-x-1"><TrendingUp className="h-3 w-3" /><span>{user.teachingSessions} sessions</span></span>
+                      {user.averageRating > 0 && <span className="flex items-center space-x-1"><Star className="h-3 w-3" /><span>{user.averageRating.toFixed(1)} rating</span></span>}
+                    </div>
+                  </div>
+                  <Badge variant="secondary" className="text-base bg-purple-100 text-purple-700">{user.xp} XP</Badge>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   )
 }

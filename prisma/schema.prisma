@@ -23,6 +23,7 @@ model User {
   learningSessions  Session[] @relation("LearnerSessions")
   givenTestimonials Testimonial[] @relation("TestimonialFrom")
   receivedTestimonials Testimonial[] @relation("TestimonialTo")
+  weeklyGoals       WeeklyGoal[]
 
   @@map("users")
 }
@@ -89,6 +90,20 @@ model Testimonial {
 
   @@unique([sessionId, fromUserId])
   @@map("testimonials")
+}
+
+model WeeklyGoal {
+  id          String   @id @default(cuid())
+  userId      String
+  sessions    Int      @default(1)
+  weekStartDate DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStartDate])
+  @@map("weekly_goals")
 }
 
 enum SkillType {

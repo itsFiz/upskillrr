@@ -81,29 +81,27 @@ export const authOptions: NextAuthOptions = {
           })
 
           if (!existingUser) {
-            await prisma.user.create({
+            const newUser = await prisma.user.create({
               data: {
                 email: user.email!,
                 name: user.name || '',
                 avatarUrl: user.image,
               }
             })
+            user.id = newUser.id;
+          } else {
+            user.id = existingUser.id;
           }
         } catch (error) {
-          console.error('Error creating user:', error)
+          console.error('Error during Google sign-in:', error)
           return false
         }
       }
       return true
     },
     async session({ session, token }) {
-      if (session.user?.email) {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: session.user.email }
-        })
-        if (dbUser) {
-          session.user.id = dbUser.id
-        }
+      if (token && session.user) {
+        session.user.id = token.id as string
       }
       return session
     },
